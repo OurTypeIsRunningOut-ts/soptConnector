@@ -9,11 +9,6 @@ const router = express.Router();
 
 import User from "../models/User";
 
-/**
- *  @route Post api/users
- *  @desc Register User
- *  @access Public
- */
 router.post(
   "/",
   [
@@ -59,7 +54,7 @@ router.post(
       // Encrpyt password
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
-
+      user.salt = salt;
       await user.save();
 
       // Return jsonwebtoken
@@ -83,5 +78,20 @@ router.post(
     }
   }
 );
+router.get('/sign-in', async (req, res) => {
+  const { email, password } = req.params;
+  try {
+    const user = await User.findOne({ email });
+    const salt = user.salt;
+    const hashedPassword = await bcrypt.hash(password, salt);
+    if (hashedPassword !== user.password) {
+      res.status(403).send('Wrong Password');
+    }
+    res.status(200).send('Signed in successfully');
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;
