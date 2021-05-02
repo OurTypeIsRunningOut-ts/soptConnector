@@ -1,5 +1,9 @@
 {
   "dependencies": {
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.7",
+    "sns": "^1.1.0",
+    "social": "^0.4.0"
   }
 }
